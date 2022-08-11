@@ -11,10 +11,10 @@ import idl from "../idl.json"
 const PROGRAM_ID = `He3o5wZcoFfY4htptHZpGjwno83ZGNVzFUMSsojQHg8d`
 
 export interface Props {
-  setCounter
+  counter
 }
 
-export const Initialize: FC<Props> = ({ setCounter }) => {
+export const Decrement: FC<Props> = ({ counter }) => {
   const [url, setUrl] = useState("")
   const { sendTransaction } = useWallet()
 
@@ -27,33 +27,30 @@ export const Initialize: FC<Props> = ({ setCounter }) => {
   const programId = new anchor.web3.PublicKey(PROGRAM_ID)
   const program = new anchor.Program(idl as anchor.Idl, programId)
 
-  const newAccount = anchor.web3.Keypair.generate()
-
   const onClick = async () => {
-    const transaction = await program.methods
-      .initialize()
+    const transaction = new anchor.web3.Transaction()
+    const instruction = await program.methods
+      .decrement()
       .accounts({
-        counter: newAccount.publicKey,
+        counter: counter,
         user: wallet.publicKey,
-        systemAccount: anchor.web3.SystemProgram.programId,
       })
-      .transaction()
+      .instruction()
 
-    sendTransaction(transaction, connection, { signers: [newAccount] }).then(
-      (sig) => {
-        console.log(
-          `Transaction: https://explorer.solana.com/tx/${sig}?cluster=devnet`
-        )
-        setUrl(`https://explorer.solana.com/tx/${sig}?cluster=devnet`)
-        setCounter(newAccount.publicKey)
-      }
-    )
+    transaction.add(instruction)
+
+    sendTransaction(transaction, connection).then((sig) => {
+      console.log(
+        `Transaction: https://explorer.solana.com/tx/${sig}?cluster=devnet`
+      )
+      setUrl(`https://explorer.solana.com/tx/${sig}?cluster=devnet`)
+    })
   }
 
   return (
     <div>
       <div className={styles.buttonContainer} onClick={onClick}>
-        <button className={styles.button}>Initialize Counter</button>
+        <button className={styles.button}>Decrement Counter</button>
       </div>
       {url && (
         <a href={url} target="_blank">

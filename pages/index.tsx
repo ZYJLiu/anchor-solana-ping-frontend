@@ -2,8 +2,9 @@ import { NextPage } from "next"
 import styles from "../styles/Home.module.css"
 import { AppBar } from "../components/AppBar"
 import { useWallet } from "@solana/wallet-adapter-react"
-import { Increment } from "../components/Increment"
 import { Initialize } from "../components/Initialize"
+import { Increment } from "../components/Increment"
+import { Decrement } from "../components/Decrement"
 import { useState } from "react"
 import Head from "next/head"
 
@@ -23,7 +24,12 @@ const Home: NextPage = (props) => {
         ) : (
           <>Connect Wallet</>
         )}
-        {counter && <Increment counter={counter} />}
+        {counter && (
+          <div>
+            <Increment counter={counter} />
+            <Decrement counter={counter} />
+          </div>
+        )}
       </div>
     </div>
   )
