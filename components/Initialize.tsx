@@ -8,7 +8,7 @@ import { FC, useState } from "react"
 import styles from "../styles/Button.module.css"
 import idl from "../idl.json"
 
-const PROGRAM_ID = `He3o5wZcoFfY4htptHZpGjwno83ZGNVzFUMSsojQHg8d`
+const PROGRAM_ID = `DAawMXRAqu61iU7ZAkXMsz6jjmonT3Qr9HraHvoMo7iF`
 
 export interface Props {
   setCounter
@@ -31,7 +31,7 @@ export const Initialize: FC<Props> = ({ setCounter }) => {
 
   const onClick = async () => {
     const transaction = await program.methods
-      .initialize()
+      .initialize(new anchor.BN(1))
       .accounts({
         counter: newAccount.publicKey,
         user: wallet.publicKey,
